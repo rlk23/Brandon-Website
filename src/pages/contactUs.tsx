@@ -1,15 +1,38 @@
-import NavBar from "@/components/NavBar";
+"use client";
+import Link from "next/link";
 
 export default function ContactUs() {
   return (
     <main className="relative min-h-screen bg-gray-100">
-      {/* Header Section with NavBar */}
-      <header className="relative bg-cover bg-center h-80" style={{ backgroundImage: 'url("/datacenter.jpg")' }}>
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        {/* NavBar */}
-        <NavBar />
-        {/* Header Content */}
+      {/* Header Section */}
+      <header className="relative h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/datacenter.jpg")' }}>
+        {/* Transparent Header */}
+        <nav className="absolute top-0 left-0 w-full z-50 flex justify-end items-center px-6 py-4">
+          <ul className="flex space-x-6 text-white font-semibold text-lg">
+            <li>
+              <Link href="/" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
+                About Us
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link href="/contactUs" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
+                Contact Us
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Centered Text */}
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-5xl font-bold text-white">Contact Us</h1>
         </div>
@@ -53,10 +76,24 @@ export default function ContactUs() {
             />
             <input
               type="text"
-              placeholder="Phone Number *"
+              placeholder="Phone Number * (Including Country Code)"
               className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
+            <div className="md:col-span-2">
+              <select
+                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  How did you hear about us?
+                </option>
+                <option>Google Search</option>
+                <option>Referral</option>
+                <option>Social Media</option>
+                <option>Other</option>
+              </select>
+            </div>
             <textarea
               placeholder="How can we help you?"
               className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 col-span-1 md:col-span-2"
@@ -72,30 +109,49 @@ export default function ContactUs() {
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Office Locations Section */}
+      <section className="bg-gray-900 text-white py-12 px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {/* Locations */}
           <div>
-            <h3 className="font-bold mb-2">Dallas, US</h3>
-            <p>1950 N.Stemmons Fwy, Suite 2033</p>
-            <p>Dallas, TX 75207</p>
-            <p>Local US Free Call: 855 234 1621</p>
-            <p>Email: sales@company.com</p>
+            <h3 className="font-bold mb-2">Dallas, US (North America HQ)</h3>
+            <p>1950 N Stemmons Pwy. Suite 2033</p>
+            <p>Dallas TX 75207</p>
+            <p className="mt-2">Local US Free Call: 855 234 1621</p>
+            <p>From Outside USA: +61.1800 951 916</p>
+            <p>Email: sales@tapeark.com</p>
+          </div>
+          <div>
+            <h3 className="font-bold mb-2">Montreal, Canada</h3>
+            <p>6250 Vanden Abeele Street</p>
+            <p>St-Laurent QC H45 151</p>
           </div>
           <div>
             <h3 className="font-bold mb-2">Exeter, UK</h3>
             <p>Local UK Free Call: 0808 164 1302</p>
-            <p>Email: sales@company.com</p>
+            <p>From Europe: +61.1800 951 916</p>
+            <p>Email: sales@tapeark.com</p>
           </div>
           <div>
-            <h3 className="font-bold mb-2">Perth, Australia</h3>
+            <h3 className="font-bold mb-2">New Delhi, India</h3>
+            <p>2nd Floor, Block B, Vatika Atrium</p>
+            <p>Sector 53, Golf Course Road</p>
+          </div>
+          <div>
+            <h3 className="font-bold mb-2">Perth, Australia (Global HQ)</h3>
             <p>Level 1, 2 Brook Street</p>
-            <p>East Perth, WA 6004</p>
-            <p>Local AUS Free Call: 1800 951 916</p>
-            <p>Email: sales@company.com</p>
+            <p>East Perth WA 6004</p>
+            <p className="mt-2">Local AUS Free Call: 1800 951 916</p>
+            <p>From Outside AUS: +61.1800 951 916</p>
+            <p>Email: sales@tapeark.com</p>
+          </div>
+          <div>
+            <h3 className="font-bold mb-2">Los Angeles, US</h3>
+            <p>445 N Douglas St. Suite 603689</p>
+            <p>El Segundo CA 90245</p>
           </div>
         </div>
-      </footer>
+      </section>
     </main>
   );
 }

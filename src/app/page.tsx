@@ -17,7 +17,7 @@ export default function Home() {
       </video>
 
       {/* Components */}
-      <NavBar />
+
       <HeroSection />
     </main>
   );
