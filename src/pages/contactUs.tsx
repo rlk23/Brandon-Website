@@ -1,38 +1,90 @@
 "use client";
-import Link from "next/link";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Form validation schema using zod
+const profileFormSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters." })
+    .max(30, { message: "Name must not exceed 30 characters." }),
+  email: z
+    .string({ required_error: "Please enter an email address." })
+    .email({ message: "Invalid email address." }),
+  phone: z
+    .string()
+    .min(9, { message: "Phone number must be at least 9 characters." })
+    .max(15, { message: "Phone number must not exceed 15 characters." }),
+  message: z
+    .string()
+    .min(4, { message: "Message must be at least 4 characters." })
+    .max(160, { message: "Message must not exceed 160 characters." }),
+});
+
+// Form values type
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export default function ContactUs() {
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    mode: "onChange",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data: ProfileFormValues) => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message.");
+      }
+
+      toast({
+        title: "Message sent!",
+        description: "We'll get back to you soon.",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="relative min-h-screen bg-gray-100">
       {/* Header Section */}
-      <header className="relative h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/datacenter.jpg")' }}>
-        {/* Transparent Header */}
-        <nav className="absolute top-0 left-0 w-full z-50 flex justify-end items-center px-6 py-4">
-          <ul className="flex space-x-6 text-white font-semibold text-lg">
-            <li>
-              <Link href="/" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link href="/services" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
-                Services
-              </Link>
-            </li>
-            <li>
-              <Link href="/contactUs" className="px-4 py-2 hover:bg-gray-700 hover:bg-opacity-50 rounded-md transition">
-                Contact Us
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Centered Text */}
+      <header
+        className="relative h-screen bg-cover bg-center"
+        style={{ backgroundImage: 'url("/datacenter.jpg")' }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-5xl font-bold text-white">Contact Us</h1>
         </div>
@@ -43,113 +95,86 @@ export default function ContactUs() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 text-gray-900">Get in touch.</h2>
           <p className="text-gray-600 mb-8">
-            Fill in your contact details in the form below, and one of our experienced advisors will be in touch shortly to help you.
+            Fill in your contact details below, and we’ll respond shortly.
           </p>
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <input
-              type="text"
-              placeholder="First Name *"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Last Name *"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Company Name"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-            />
-            <input
-              type="text"
-              placeholder="Role/Position"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-            />
-            <input
-              type="email"
-              placeholder="Email Address *"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Phone Number * (Including Country Code)"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-            <div className="md:col-span-2">
-              <select
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  How did you hear about us?
-                </option>
-                <option>Google Search</option>
-                <option>Referral</option>
-                <option>Social Media</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <textarea
-              placeholder="How can we help you?"
-              className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 col-span-1 md:col-span-2"
-              rows={4}
-            ></textarea>
-            <button
-              type="submit"
-              className="p-3 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors col-span-1 md:col-span-2"
-            >
-              Send
-            </button>
-          </form>
-        </div>
-      </section>
 
-      {/* Office Locations Section */}
-      <section className="bg-gray-900 text-white py-12 px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {/* Locations */}
-          <div>
-            <h3 className="font-bold mb-2">Dallas, US (North America HQ)</h3>
-            <p>1950 N Stemmons Pwy. Suite 2033</p>
-            <p>Dallas TX 75207</p>
-            <p className="mt-2">Local US Free Call: 855 234 1621</p>
-            <p>From Outside USA: +61.1800 951 916</p>
-            <p>Email: sales@tapeark.com</p>
-          </div>
-          <div>
-            <h3 className="font-bold mb-2">Montreal, Canada</h3>
-            <p>6250 Vanden Abeele Street</p>
-            <p>St-Laurent QC H45 151</p>
-          </div>
-          <div>
-            <h3 className="font-bold mb-2">Exeter, UK</h3>
-            <p>Local UK Free Call: 0808 164 1302</p>
-            <p>From Europe: +61.1800 951 916</p>
-            <p>Email: sales@tapeark.com</p>
-          </div>
-          <div>
-            <h3 className="font-bold mb-2">New Delhi, India</h3>
-            <p>2nd Floor, Block B, Vatika Atrium</p>
-            <p>Sector 53, Golf Course Road</p>
-          </div>
-          <div>
-            <h3 className="font-bold mb-2">Perth, Australia (Global HQ)</h3>
-            <p>Level 1, 2 Brook Street</p>
-            <p>East Perth WA 6004</p>
-            <p className="mt-2">Local AUS Free Call: 1800 951 916</p>
-            <p>From Outside AUS: +61.1800 951 916</p>
-            <p>Email: sales@tapeark.com</p>
-          </div>
-          <div>
-            <h3 className="font-bold mb-2">Los Angeles, US</h3>
-            <p>445 N Douglas St. Suite 603689</p>
-            <p>El Segundo CA 90245</p>
-          </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              {/* Name Field */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your Name" {...field} />
+                    </FormControl>
+                    <FormDescription>Enter your full name.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Email Field */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your Email" {...field} />
+                    </FormControl>
+                    <FormDescription>We'll use this to contact you.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Phone Field */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your Phone Number" {...field} />
+                    </FormControl>
+                    <FormDescription>Include country code if applicable.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Message Field */}
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Message</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Your Message" {...field} />
+                    </FormControl>
+                    <FormDescription>What can we help you with?</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Submit Button */}
+              <div className="md:col-span-2 flex justify-end">
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Sending..." : "Submit"}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </section>
     </main>
