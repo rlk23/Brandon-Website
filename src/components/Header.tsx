@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="relative h-screen">
@@ -13,24 +15,48 @@ export default function Home() {
         Your browser does not support the video tag.
       </video>
 
-      {/* Nav Bar */}
-      <nav className="absolute top-0 right-0 w-full flex justify-end p-4 text-white z-10">
-        {/* Adjust spacing and styling as needed */}
-        <ul className="flex space-x-10 text-lg font-semibold">
-          <li>
-            <a href="#" className="hover:underline tracking-wide">Home</a>
-          </li>
-          <li>
-            <a href="#" className="hover:underline tracking-wide">About Us</a>
-          </li>
-          <li>
-            <a href="#" className="hover:underline tracking-wide">Services</a>
-          </li>
-          <li>
-            <a href="#" className="hover:underline tracking-wide">Contact Us</a>
-          </li>
-        </ul>
-      </nav>
+   
+
+    {/* Nav Bar */}
+    <nav className="absolute top-0 right-0 w-full flex justify-end p-4 text-white z-10">
+      {/* Adjust spacing and styling as needed */}
+      <ul className="flex space-x-10 text-lg font-semibold">
+        <li>
+          <Link
+            href="/"
+            className="px-4 py-2 rounded-md tracking-wide hover:bg-gray-700 hover:text-white transition-colors duration-200"
+          >
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="pages/about"
+            className="px-4 py-2 rounded-md tracking-wide hover:bg-gray-700 hover:text-white transition-colors duration-200"
+          >
+            About Us
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="pages/services"
+            className="px-4 py-2 rounded-md tracking-wide hover:bg-gray-700 hover:text-white transition-colors duration-200"
+          >
+            Services
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="pages/contactUs"
+            className="px-4 py-2 rounded-md tracking-wide hover:bg-gray-700 hover:text-white transition-colors duration-200"
+          >
+            Contact Us
+          </Link>
+        </li>
+      </ul>
+    </nav>
+
+
 
 
       {/* Centered Text */}
